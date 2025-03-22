@@ -1,0 +1,24 @@
+.drop-zone {
+  width: 80%;
+  max-width: 600px;
+  height: 200px;
+  border: 2px dashed #61dafb;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(97, 218, 251, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.drop-zone:hover {
+  background-color: rgba(97, 218, 251, 0.2);
+  border-color: #764abc;
+}
+
+.drop-zone p {
+  color: #61dafb;
+  font-size: 1.2rem;
+  margin: 0;
+} 
