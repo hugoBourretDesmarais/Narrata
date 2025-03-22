@@ -3,11 +3,9 @@ import PropTypes from 'prop-types';
 import Popup from './Popup';
 import './DragAndDrop.css';
 
-const DragAndDrop = ({ onFilesAccepted, acceptedFileTypes = ['.pdf'] }) => {
+const DragAndDrop = ({ onFileSelect }) => {
   const fileInputRef = useRef(null);
   const [showPopup, setShowPopup] = useState(false);
-  const [popupMessage, setPopupMessage] = useState('');
-  const [popupType, setPopupType] = useState('error');
 
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -30,35 +28,14 @@ const DragAndDrop = ({ onFilesAccepted, acceptedFileTypes = ['.pdf'] }) => {
     handleFiles(files);
   };
 
-  const showNotification = (message, type = 'error') => {
-    setPopupMessage(message);
-    setPopupType(type);
-    setShowPopup(true);
-    setTimeout(() => setShowPopup(false), 3000);
-  };
-
   const handleFiles = (files) => {
-    const acceptedFiles = files.filter(file => 
-      acceptedFileTypes.some(type => file.name.toLowerCase().endsWith(type))
-    );
-    const rejectedFiles = files.filter(file => 
-      !acceptedFileTypes.some(type => file.name.toLowerCase().endsWith(type))
-    );
-
-    if (rejectedFiles.length > 0) {
-      showNotification(
-        `Please only drop ${acceptedFileTypes.join(', ')} files. ${rejectedFiles.length} invalid file(s) detected.`,
-        'error'
-      );
-      return;
-    }
-
-    if (acceptedFiles.length > 0) {
-      showNotification(
-        `Successfully added ${acceptedFiles.length} file(s)`,
-        'success'
-      );
-      onFilesAccepted(acceptedFiles);
+    if (files.length > 0) {
+      const file = files[0];
+      if (file.type !== 'application/pdf') {
+        setShowPopup(true);
+        return;
+      }
+      onFileSelect(file);
     }
   };
 
@@ -70,26 +47,27 @@ const DragAndDrop = ({ onFilesAccepted, acceptedFileTypes = ['.pdf'] }) => {
         onDrop={handleDrop}
         onClick={handleClick}
       >
-        <p>Drag and drop {acceptedFileTypes.join(', ')} files here or click to select</p>
+        <p>Drag and drop a PDF file here or click to select</p>
         <input
           type="file"
           ref={fileInputRef}
           onChange={handleFileSelect}
-          accept={acceptedFileTypes.join(',')}
-          multiple
+          accept=".pdf"
           style={{ display: 'none' }}
         />
       </div>
       {showPopup && (
-        <Popup message={popupMessage} type={popupType} />
+        <Popup 
+          message="Please upload a PDF file" 
+          onClose={() => setShowPopup(false)} 
+        />
       )}
     </>
   );
 };
 
 DragAndDrop.propTypes = {
-  onFilesAccepted: PropTypes.func.isRequired,
-  acceptedFileTypes: PropTypes.arrayOf(PropTypes.string)
+  onFileSelect: PropTypes.func.isRequired
 };
 
 export default DragAndDrop; 

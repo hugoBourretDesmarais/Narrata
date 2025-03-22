@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import * as pdfjsLib from 'pdfjs-dist';
 import TextHighlighter from './TextHighlighter';
+import Narrator from './Narrator';
 import './TextViewer.css';
 
 // Initialize PDF.js worker
@@ -11,6 +12,7 @@ const TextViewer = ({ file }) => {
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     const readPDF = async () => {
@@ -47,6 +49,18 @@ const TextViewer = ({ file }) => {
     }
   }, [file]);
 
+  const handlePlay = () => {
+    setIsPlaying(true);
+  };
+
+  const handlePause = () => {
+    setIsPlaying(false);
+  };
+
+  const handleStop = () => {
+    setIsPlaying(false);
+  };
+
   if (loading) {
     return (
       <div className="text-viewer">
@@ -70,7 +84,17 @@ const TextViewer = ({ file }) => {
 
   return (
     <div className="text-viewer">
-      <TextHighlighter content={content} />
+      <TextHighlighter 
+        content={content} 
+        isPlaying={isPlaying}
+        onComplete={handleStop}
+      />
+      <Narrator 
+        content={content}
+        onPlay={handlePlay}
+        onPause={handlePause}
+        onStop={handleStop}
+      />
     </div>
   );
 };

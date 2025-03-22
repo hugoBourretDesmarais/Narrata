@@ -1,57 +1,36 @@
 import React, { useState } from 'react';
 import DragAndDrop from './components/DragAndDrop';
 import TextViewer from './components/TextViewer';
-import Popup from './components/Popup';
 import './App.css';
 
 function App() {
-  const [showTextViewer, setShowTextViewer] = useState(false);
-  const [showPopup, setShowPopup] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
 
-  const handleFilesAccepted = (files) => {
-    if (files.length > 0) {
-      const file = files[0];
-      if (file.type !== 'application/pdf') {
-        setShowPopup(true);
-        return;
-      }
-      setSelectedFile(file);
-      setShowTextViewer(true);
-    }
+  const handleFileSelect = (file) => {
+    setSelectedFile(file);
   };
 
   const handleBack = () => {
-    setShowTextViewer(false);
     setSelectedFile(null);
   };
 
   return (
-    <div className="App">
+    <div className={`App ${selectedFile ? 'viewer-active' : ''}`}>
       <header className="App-header">
-        <div className="header-content">
-          {showTextViewer && (
-            <button className="back-button" onClick={handleBack}>
-              ← Back
-            </button>
-          )}
-          <h1 className={`app-title ${showTextViewer ? 'slide-up' : ''}`}>Narrata</h1>
-        </div>
-        {!showTextViewer ? (
-          <DragAndDrop
-            onFilesAccepted={handleFilesAccepted}
-            acceptedFileTypes={['.pdf']}
-          />
+        <h1>Narrata</h1>
+        {selectedFile && (
+          <button className="back-button" onClick={handleBack}>
+            ← Back
+          </button>
+        )}
+      </header>
+      <main className="App-content">
+        {!selectedFile ? (
+          <DragAndDrop onFileSelect={handleFileSelect} />
         ) : (
           <TextViewer file={selectedFile} />
         )}
-      </header>
-      {showPopup && (
-        <Popup 
-          message="Please upload a PDF file" 
-          onClose={() => setShowPopup(false)} 
-        />
-      )}
+      </main>
     </div>
   );
 }
