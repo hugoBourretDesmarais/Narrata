@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import DragAndDrop from './components/DragAndDrop';
 import TextViewer from './components/TextViewer';
 import Popup from './components/Popup';
@@ -6,24 +6,19 @@ import './App.css';
 
 function App() {
   const [showTextViewer, setShowTextViewer] = useState(false);
-  const [content, setContent] = useState('');
   const [showPopup, setShowPopup] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
 
   const handleFilesAccepted = (files) => {
-    // Here you would typically process the PDF files
-    // For now, we'll just set some placeholder content
-    setContent('PDF content will be displayed here...');
-    setShowTextViewer(true);
-  };
-
-  const handleFileUpload = (file) => {
-    if (file.type !== 'application/pdf') {
-      setShowPopup(true);
-      return;
+    if (files.length > 0) {
+      const file = files[0];
+      if (file.type !== 'application/pdf') {
+        setShowPopup(true);
+        return;
+      }
+      setSelectedFile(file);
+      setShowTextViewer(true);
     }
-    setSelectedFile(file);
-    setShowTextViewer(true);
   };
 
   const handleBack = () => {
@@ -48,10 +43,7 @@ function App() {
             acceptedFileTypes={['.pdf']}
           />
         ) : (
-          <TextViewer 
-            file={selectedFile} 
-            onBack={handleBack}
-          />
+          <TextViewer file={selectedFile} />
         )}
       </header>
       {showPopup && (
