@@ -45,6 +45,7 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   box-sizing: border-box;
   max-width: 100%;
+  position: relative;
 }
 
 .text-viewer-content::-webkit-scrollbar {
@@ -105,4 +106,15 @@
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+.word {
+  display: inline;
+  background-color: rgba(97, 218, 251, 0.3);
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+.word.highlighted {
+  background-color: rgba(97, 218, 251, 0.3);
 } 
